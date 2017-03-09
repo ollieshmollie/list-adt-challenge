@@ -3,12 +3,12 @@ require_relative 'exceptions'
 class LinkedList
   attr_reader :length
   def initialize
-    @head = Node.new
+    self.head = Node.new
     @length = 0
   end
 
   def add(element)
-    curr_node = @head
+    curr_node = head
     while !curr_node.next.nil?
       curr_node = curr_node.next
     end
@@ -20,7 +20,7 @@ class LinkedList
   def get(index)
     raise_no_such_element_error if out_of_bounds?(index)
     count = 0
-    curr_node = @head.next
+    curr_node = head.next
     while count < index
       curr_node = curr_node.next
       count += 1
@@ -31,7 +31,7 @@ class LinkedList
   def set(index, element)
     raise_no_such_element_error if out_of_bounds?(index)
     count = 0
-    curr_node = @head.next
+    curr_node = head.next
     while count < index
       curr_node = curr_node.next
       count += 1
@@ -39,14 +39,32 @@ class LinkedList
     curr_node.element = element
   end
 
+  def insert(index, element)
+    if empty?
+      @head.next = Node.new(element)
+    else
+      raise_out_of_bounds_error if out_of_bounds?(index)
+      count = 0
+      curr_node = head
+      while count < index
+        curr_node = curr_node.next
+        count += 1
+      end
+      new_node = Node.new(element)
+      new_node.next = curr_node.next
+      curr_node.next = new_node
+    end
+    self.length = length + 1
+  end
+
   def first
     raise_no_such_element_error if empty?
-    @head.next.element
+    head.next.element
   end
 
   def last
     raise_no_such_element_error if empty? 
-    curr_node = @head.next
+    curr_node = head.next
     while !curr_node.next.nil?
       curr_node = curr_node.next
     end
@@ -55,9 +73,14 @@ class LinkedList
 
   private
     attr_writer :length
+    attr_accessor :head
 
     def raise_no_such_element_error
       raise NoSuchElementError
+    end
+
+    def raise_out_of_bounds_error
+      raise OutOfBoundsError
     end
 
     def out_of_bounds?(index)
