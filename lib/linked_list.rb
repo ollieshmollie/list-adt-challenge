@@ -8,13 +8,9 @@ class LinkedList
   end
 
   def add(element)
-    curr_node = head
-    while !curr_node.next.nil?
-      curr_node = curr_node.next
-    end
-    curr_node.next = Node.new(element)
+    last_node.next = Node.new(element)
     self.length = length + 1
-    curr_node.next.element
+    element
   end
 
   def get(index)
@@ -74,6 +70,17 @@ class LinkedList
   private
     attr_writer :length
     attr_accessor :head
+
+    def last_node
+      find(length)
+    end
+
+    def find(index, curr_node=head)
+      0.upto(index - 1) do
+        curr_node = curr_node.next
+      end
+      curr_node
+    end
 
     def raise_no_such_element_error
       raise NoSuchElementError
