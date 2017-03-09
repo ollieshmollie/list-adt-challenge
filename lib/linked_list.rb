@@ -15,24 +15,12 @@ class LinkedList
 
   def get(index)
     raise_no_such_element_error if out_of_bounds?(index)
-    count = 0
-    curr_node = head.next
-    while count < index
-      curr_node = curr_node.next
-      count += 1
-    end  
-    curr_node.element
+    find(index).element
   end
 
   def set(index, element)
     raise_no_such_element_error if out_of_bounds?(index)
-    count = 0
-    curr_node = head.next
-    while count < index
-      curr_node = curr_node.next
-      count += 1
-    end
-    curr_node.element = element
+    find(index).element = element
   end
 
   def insert(index, element)
@@ -40,15 +28,10 @@ class LinkedList
       @head.next = Node.new(element)
     else
       raise_out_of_bounds_error if out_of_bounds?(index)
-      count = 0
-      curr_node = head
-      while count < index
-        curr_node = curr_node.next
-        count += 1
-      end
       new_node = Node.new(element)
-      new_node.next = curr_node.next
-      curr_node.next = new_node
+      prev_node = find(index - 1)
+      new_node.next = prev_node.next
+      prev_node.next = new_node
     end
     self.length = length + 1
   end
@@ -60,11 +43,7 @@ class LinkedList
 
   def last
     raise_no_such_element_error if empty? 
-    curr_node = head.next
-    while !curr_node.next.nil?
-      curr_node = curr_node.next
-    end
-    curr_node.element
+    last_node.element
   end
 
   private
@@ -72,11 +51,11 @@ class LinkedList
     attr_accessor :head
 
     def last_node
-      find(length)
+      find(length - 1)
     end
 
     def find(index, curr_node=head)
-      0.upto(index - 1) do
+      0.upto(index) do
         curr_node = curr_node.next
       end
       curr_node
